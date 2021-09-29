@@ -1,4 +1,6 @@
 import 'package:clone_instagram/homepage.dart';
+import 'package:clone_instagram/login/login_page.dart';
+import 'package:clone_instagram/user/user_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,11 +12,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginPage(),
+        '/home': (context) => HomePage(),
+        '/user_page': (context) => UserPage(),
+      },
     );
   }
 }

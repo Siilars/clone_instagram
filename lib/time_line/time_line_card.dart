@@ -1,6 +1,8 @@
-import 'package:clone_instagram/storie/storie_icons.dart';
+import 'package:clone_instagram/time_line/time_line_icon.dart';
+import 'package:clone_instagram/time_line/time_line_image.dart';
 
 import 'package:flutter/material.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 
 class TimeLineCard extends StatefulWidget {
   final String title;
@@ -11,66 +13,69 @@ class TimeLineCard extends StatefulWidget {
 }
 
 class _TimeLineCardState extends State<TimeLineCard> {
-  int _likeCounter = 0;
+  final _likeCounter = RxNotifier<int>(0);
 
   void _incrementCounter() {
-    setState(() {
-      _likeCounter++;
-    });
+    _likeCounter.value++;
   }
 
   @override
   Widget build(BuildContext context) {
     final boldText = TextStyle(fontWeight: FontWeight.bold, fontSize: 14);
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Row(
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.only(left: 10, bottom: 10),
+          child: Row(
             children: [
               SizedBox(
-                child: StoryIcon(title: '', isOnlyFans: false),
+                child: TimeLineIcon(title: '', icon: false),
                 width: 60,
               ),
-              SizedBox(width: 10),
+              // SizedBox(width: 10),
               Text(
                 widget.title,
                 style: boldText,
               ),
             ],
           ),
-          Container(
-            //width: MediaQuery.of(context).size.width,
-            height: 200,
-            color: Colors.red,
-          ),
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.favorite_border),
-                onPressed: () {
-                  _incrementCounter();
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.add_comment_outlined),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.share),
-                onPressed: () {},
-              ),
-              SizedBox(width: 194),
-              Icon(Icons.save_alt_sharp),
-            ],
-          ),
-          Container(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text('$_likeCounter curtidas', style: boldText),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          child: TimeLineImage(),
+        ),
+        Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.favorite_border),
+              onPressed: () {
+                _incrementCounter();
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.add_comment_outlined),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.share),
+              onPressed: () {},
+            ),
+            SizedBox(width: 194),
+            Icon(Icons.save_alt_sharp),
+          ],
+        ),
+        Container(
+          padding: EdgeInsets.only(left: 10, bottom: 20),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: RxBuilder(
+              builder: (context) {
+                return Text('${_likeCounter.value} curtidas', style: boldText);
+              },
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -1,10 +1,9 @@
-import 'package:clone_instagram/conts/colors.dart';
-import 'package:clone_instagram/conts/image.dart';
-import 'package:clone_instagram/storie/stories.dart';
-import 'package:clone_instagram/time_line/time_line.dart';
+import 'package:clone_instagram/home_controller.dart';
+import 'package:clone_instagram/home_tab.dart';
+import 'package:clone_instagram/user/user_page.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,61 +13,39 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  HomeController _homeController = HomeController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColor.white,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Image.asset(
-            AppImage.logo,
-            height: 200,
-            width: 150,
-            color: AppColor.black,
-          ),
-        ),
-        actions: [
-          Row(
-            children: [
-              Icon(
-                Icons.add_box_outlined,
-                color: AppColor.black,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Icon(Icons.favorite_border, color: AppColor.black),
-              SizedBox(
-                width: 20,
-              ),
-              Icon(Icons.mail_outline, color: AppColor.black),
-              SizedBox(
-                width: 20,
-              ),
+      body: RxBuilder(builder: (context) {
+        late Widget body;
+        if (_homeController.tabIndex.value == 0) {
+          body = HomeTab();
+        } else if (_homeController.tabIndex.value == 4) {
+          body = UserPage();
+        } else {
+          body = Text('Page invalid');
+        }
+
+        return body;
+      }),
+      bottomNavigationBar: RxBuilder(
+        builder: (context) {
+          return BottomNavigationBar(
+            currentIndex: _homeController.tabIndex.value,
+            onTap: (value) {
+              _homeController.setTabIndex(value);
+            },
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: ('')),
+              BottomNavigationBarItem(icon: Icon(Icons.search_rounded), label: ('')),
+              BottomNavigationBarItem(icon: Icon(Icons.local_play_sharp), label: ('')),
+              BottomNavigationBarItem(icon: Icon(Icons.shop_outlined), label: ('')),
+              BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: ('')),
             ],
-          )
-        ],
-      ),
-      body: Container(
-        padding: EdgeInsets.only(left: 10, top: 10, right: 10),
-        child: Column(
-          children: [
-            Stories(),
-            Divider(),
-            TimeLineClone(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ('')),
-          BottomNavigationBarItem(icon: Icon(Icons.search_rounded), label: ('')),
-          BottomNavigationBarItem(icon: Icon(Icons.local_play_sharp), label: ('')),
-          BottomNavigationBarItem(icon: Icon(Icons.shop_outlined), label: ('')),
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: ('')),
-        ],
+          );
+        },
       ),
     );
   }
